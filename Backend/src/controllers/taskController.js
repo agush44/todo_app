@@ -12,11 +12,12 @@ const getAllTasks = async (req, res, next) => {
 const addTask = async (req, res, next) => {
   try {
     const newTask = await Task.addTask(req.body);
+    console.log(newTask);
 
     if (!newTask) {
       return res.status(400).json({
         status: 400,
-        error: "Failed to create movie. Please try again.",
+        error: "Failed to create task. Please try again.",
       });
     }
 
@@ -29,6 +30,7 @@ const addTask = async (req, res, next) => {
 const deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
+    console.log("Deleting task with id:", id);
 
     if (!id) {
       return res.status(400).json({
