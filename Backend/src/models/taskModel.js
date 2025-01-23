@@ -37,6 +37,26 @@ const addTask = async (dataTask) => {
   }
 };
 
+const editTask = async (id, updateData) => {
+  try {
+    const task = await Task.findById(id);
+    if (!task) {
+      throw {
+        status: 404,
+        message: "Task not found.",
+      };
+    }
+    Object.assign(task, updateData);
+    await task.save();
+    return task;
+  } catch (error) {
+    throw {
+      status: 500,
+      message: "Error editing the task",
+    };
+  }
+};
+
 const deleteTask = async (id) => {
   try {
     const deletedTask = await Task.findByIdAndDelete(id);
@@ -60,5 +80,6 @@ const deleteTask = async (id) => {
 export default {
   getAllTasks,
   addTask,
+  editTask,
   deleteTask,
 };

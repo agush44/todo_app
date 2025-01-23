@@ -12,7 +12,6 @@ const getAllTasks = async (req, res, next) => {
 const addTask = async (req, res, next) => {
   try {
     const newTask = await Task.addTask(req.body);
-    console.log(newTask);
 
     if (!newTask) {
       return res.status(400).json({
@@ -27,10 +26,37 @@ const addTask = async (req, res, next) => {
   }
 };
 
+const editTask = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const editData = req.body;
+
+    const editedTask = await Task.editTask(id, editData);
+
+    if (!editedTask) {
+      return res.status(404).json({
+        status: 400,
+        error: "Task not found.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Task edited successfully.",
+      task: {
+        _id: editedTask._id,
+        task: editedTask.task,
+        createdAt: editedTask.createdAt,
+        updatedAt: editedTask.updatedAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log("Deleting task with id:", id);
 
     if (!id) {
       return res.status(400).json({
@@ -54,4 +80,4 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
-export { getAllTasks, addTask, deleteTask };
+export { getAllTasks, addTask, editTask, deleteTask };
