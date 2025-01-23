@@ -1,0 +1,137 @@
+openapi: 3.0.0
+info:
+  title: ToDo List API
+  version: 1.0.0
+  description: API para gestionar tareas
+
+servers:
+  - url: http://localhost:3005
+    description: Servidor local para desarrollo
+
+paths:
+  /tasks:
+    get:
+      summary: Obtener todas las tareas
+      operationId: getAllTasks
+      tags:
+        - Tasks
+      responses:
+        "200":
+          description: Lista de tareas obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+
+    post:
+      summary: Crear una nueva tarea
+      operationId: createTask
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: string
+                  description: Texto de la tarea a agregar
+              required:
+                - task
+      responses:
+        "201":
+          description: Tarea creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    put:
+      summary: Editar una tarea existente
+      operationId: editTask
+      tags:
+        - Tasks
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la tarea a editar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: string
+                  description: El nuevo texto de la tarea
+              required:
+                - task
+      responses:
+        "200":
+          description: Tarea editada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Mensaje de éxito
+                  task:
+                    $ref: "#/components/schemas/Task"
+        "400":
+          description: Parámetros incorrectos o tarea no encontrada
+        "404":
+          description: Tarea no encontrada
+
+    delete:
+      summary: Eliminar una tarea
+      operationId: deleteTask
+      tags:
+        - Tasks
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la tarea a eliminar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tarea eliminada correctamente
+        "404":
+          description: No se encontró la tarea para eliminar
+
+components:
+  schemas:
+    Task:
+      type: object
+      required:
+        - _id
+        - task
+        - createdAt
+        - updatedAt
+      properties:
+        _id:
+          type: string
+          description: El ID único de la tarea
+        task:
+          type: string
+          description: Texto de la tarea
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha en que se creó la tarea
+        updatedAt:
+          type: string
+          format: date-time
+          description: Fecha de la última actualización de la tarea
